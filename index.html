@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tinkoff Norma Calculator</title>
+    <link rel="stylesheet" href="styles/style.main.css" />
+    <link rel="stylesheet" href="styles/style.input.css" />
+    <link rel="stylesheet" href="styles/style.helper.css" />
+    <script defer src="/scripts/script.js" type="module"></script>
+  </head>
+  <body>
+    <main class="container">
+      <h1>Калькулятор нормы</h1>
+      <div class="helper_wrap">
+        <p class="helper" id="helper">?</p>
+        <p class="infoText"></p>
+      </div>
+      <form name="calculator" id="form_calcucator">
+        <section class="workTime_box">
+          <div class="input_box">
+            <input
+              type="number"
+              class="input_field"
+              required
+              id="workTime"
+              name="workTime"
+              value="480"
+            />
+            <label class="input_label" for="workTime">Служебный</label>
+          </div>
+          <div class="input_box">
+            <input
+              type="number"
+              class="input_field"
+              required
+              id="projTime"
+              name="projTime"
+              value="0"
+            />
+            <label class="input_label" for="workTime">Проект</label>
+          </div>
+        </section>
+        <section class="buttons_wrap">
+          <button class="add_norma" id="addNorma">+</button>
+          <button class="calc_norma" id="calcNorma" disabled>Посчитать</button>
+        </section>
+        <section class="normaTime_wrap" id="normaWrap">
+          <section class="normaTime_box">
+            <!-- <div class="sequence_number">1</div> -->
+            <div class="input_box">
+              <input
+                type="number"
+                class="input_field"
+                required
+                id="scoreTime"
+                name="scoreTime"
+              />
+              <label class="input_label" for="scoreTime">Время на оценку</label>
+            </div>
+            <div class="input_box">
+              <input
+                type="number"
+                class="input_field"
+                required
+                id="scoreQuant"
+                name="scoreQuant"
+              />
+              <label class="input_label" for="scoreQuant"
+                >Количество оценок</label
+              >
+            </div>
+          </section>
+        </section>
+      </form>
+    </main>
+  </body>
+</html>
