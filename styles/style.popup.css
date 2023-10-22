@@ -1,0 +1,32 @@
+.popup_wrap {
+  min-width: 100vw;
+  min-height: 100vh;
+  background: rgba(0, 0, 0, 0.3);
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.popup-box {
+  width: 400px;
+  height: 300px;
+  background-color: #fff;
+  border-radius: 0.5rem;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.popup-title {
+  align-self: flex-start;
+  margin-bottom: 0.3rem;
+}
+.popup-close {
+  align-self: center;
+}
+.popup-result {
+  flex-grow: 1;
+}

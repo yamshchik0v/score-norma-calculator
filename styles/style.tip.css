@@ -1,0 +1,33 @@
+.tip_wrap {
+  background-color: #fff;
+  display: flex;
+  align-items: start;
+  text-wrap: wrap;
+  user-select: none;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #888;
+}
+
+.tip {
+  width: 15px;
+  text-align: center;
+  display: block;
+  cursor: pointer;
+  color: #333;
+  transition: 0.2s;
+  flex-shrink: 0;
+}
+
+.tip.opened {
+  color: rgba(255, 0, 0, 0.7);
+  border: none;
+}
+
+.tip.opened:hover {
+  color: #333;
+}
+
+p.infoText {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}

@@ -1,97 +1,83 @@
+import initPopup from './helpers/initPopup.js';
+import workTimeHandler from './helpers/workTimeHandler.js';
+import tipHandler from './helpers/tipHandler.js';
+
 /* –––– Form –––– */
 const form = document.getElementById('form_calcucator');
-let formData = new FormData(form);
+let formInputs = form.querySelectorAll('input[type="number"]');
+
+/* –––– Tip –––– */
+const infoTip = document.getElementById('tip');
+infoTip.addEventListener('click', tipHandler);
+
+/* ---- NormaTime box Unique Id ---- */
+let normaTimeBoxUniqueId = 1;
+
+/* ---- Form Inputs Handler function ---- */
+function getInputsData() {
+  const arrayOfInputs = Array.from(formInputs);
+  const convertedData = {};
+  for (let i = 0; i < arrayOfInputs.length; i++) {
+    let currentInput = arrayOfInputs[i];
+
+    if (currentInput.name === 'projTime' || currentInput.name === 'workTime') {
+      convertedData[currentInput.name] = +currentInput.value;
+      continue;
+    }
+    if (convertedData.hasOwnProperty('norma_' + currentInput.dataset.norma)) {
+      convertedData['norma_' + currentInput.dataset.norma].push(
+        +currentInput.value
+      );
+    } else {
+      convertedData['norma_' + currentInput.dataset.norma] = [
+        +currentInput.value,
+      ];
+    }
+  }
+  return convertedData;
+}
 
 /* –––– Elements –––– */
 const normaWrapper = document.getElementById('normaWrap');
+const mainContainer = document.querySelector('main.container');
 
 /* –––– Buttons –––– */
-const calcButton = document.getElementById('calcNorma');
+const calcButton = document.getElementById('calcNormaBtn');
 calcButton.addEventListener('click', (e) => {
   e.preventDefault();
+  let data = getInputsData();
+  let resultData = calcResult(data);
+  initResultPopup(resultData);
 });
-calcButton.disabled = true;
+
+calcButton.disabled = isFormInputsValid(formInputs);
+
 const addNormaBtn = document.getElementById('addNorma');
 addNormaBtn.addEventListener('click', function (e) {
   e.preventDefault();
+  formInputs = form.querySelectorAll('input[type="number"]');
   createNormaTimeBox();
-  formData = new FormData(form);
 });
 
-function createNormaTimeBox() {
-  calcButton.disabled = true;
-  let normaTimeBoxCount = normaWrapper.children.length;
-  if (normaTimeBoxCount === 3) {
-    addNormaBtn.disabled = true;
-  } else addNormaBtn.disabled = false;
+/* –––– Work and Project Time inputs –––– */
+let workTimePreviousValue = '';
+let projTimePreviousValue = '';
 
-  // - Section
-  const normaTimeBoxElem = document.createElement('section');
-  normaTimeBoxElem.classList.add('normaTime_box');
-  // - Time input
-  const inputBoxTimeElem = document.createElement('div');
-  inputBoxTimeElem.classList.add('input_box');
-
-  const scoreTimeInputElem = document.createElement('input');
-  scoreTimeInputElem.setAttribute('type', 'number');
-  scoreTimeInputElem.classList.add('input_field');
-  scoreTimeInputElem.setAttribute('required', '');
-  scoreTimeInputElem.setAttribute('id', 'scoreTime' + normaTimeBoxCount);
-  scoreTimeInputElem.setAttribute('name', 'scoreTime' + normaTimeBoxCount);
-
-  scoreTimeInputElem.addEventListener('input', inputValueValidation);
-
-  const scoreTimeLabelElem = document.createElement('label');
-  scoreTimeLabelElem.classList.add('input_label');
-  scoreTimeLabelElem.setAttribute('for', 'scoreTime' + normaTimeBoxCount);
-  scoreTimeLabelElem.textContent = 'Время на оценку';
-  // - Quant input
-  const inputBoxQuantElem = document.createElement('div');
-  inputBoxQuantElem.classList.add('input_box');
-
-  const scoreQuantInputElem = document.createElement('input');
-  scoreQuantInputElem.setAttribute('type', 'number');
-  scoreQuantInputElem.classList.add('input_field');
-  scoreQuantInputElem.setAttribute('required', '');
-  scoreQuantInputElem.setAttribute('id', 'scoreQuant' + normaTimeBoxCount);
-  scoreQuantInputElem.setAttribute('name', 'scoreQuant' + normaTimeBoxCount);
-
-  scoreQuantInputElem.addEventListener('input', inputValueValidation);
-
-  const scoreQuanLabelElem = document.createElement('label');
-  scoreQuanLabelElem.classList.add('input_label');
-  scoreQuanLabelElem.setAttribute('for', 'scoreQuant' + normaTimeBoxCount);
-  scoreQuanLabelElem.textContent = 'Количество оценок';
-  // - Remove button
-  const removeButtonElem = document.createElement('button');
-  removeButtonElem.classList.add('remove_norma');
-  removeButtonElem.textContent = '-';
-  removeButtonElem.addEventListener(
-    'click',
-    (e) => {
-      e.preventDefault();
-      addNormaBtn.disabled = false;
-      e.target.parentElement.remove();
-      formData = new FormData(form);
-      calcButton.disabled = !checkFormValidation();
-    },
-    { once: true }
-  );
-  inputBoxTimeElem.append(scoreTimeInputElem);
-  inputBoxTimeElem.append(scoreTimeLabelElem);
-  inputBoxQuantElem.append(scoreQuantInputElem);
-  inputBoxQuantElem.append(scoreQuanLabelElem);
-  normaTimeBoxElem.append(removeButtonElem);
-  normaTimeBoxElem.append(inputBoxTimeElem);
-  normaTimeBoxElem.append(inputBoxQuantElem);
-  normaWrapper.append(normaTimeBoxElem);
-}
-/* –––– Work Time inputs –––– */
 const workTimeInput = document.getElementById('workTime');
-workTimeInput.addEventListener('input', function (e) {
-  if (this.value.length > 3 || this.value > 999)
-    this.value = this.value.slice(0, 3);
-});
+workTimeInput.addEventListener('input', workTimeHandler(workTimePreviousValue));
+
+const projTimeInput = document.getElementById('projTime');
+projTimeInput.addEventListener('input', workTimeHandler(projTimePreviousValue));
+
+/* –––– Work and Project Time handler function –––– */
+// function timeInputHandler(e) {
+//   const re = /[1-9]\d{1,2}$/;
+//   if (this.value.length > 3)
+//     if (this.length > 3) this.value.slice(0, this.value.length);
+//   if ()
+//     this.value = this.value.slice(1, this.value.length);
+//   if (+this.value < 0 || +this.value > 999) this.value = previousValue;
+// }
 /* –––– Norma inputs –––– */
 
 const scoreTimeInput = document.getElementById('scoreTime');
@@ -113,33 +99,21 @@ function inputValueValidation(e) {
     e.preventDefault();
     e.target.value = e.target.value.slice(0, 2);
   }
-  formData = new FormData(form);
-  calcButton.disabled = !checkFormValidation();
+  formInputs = form.querySelectorAll('input[type="number"]');
+  calcButton.disabled = !isFormInputsValid(formInputs);
 }
 
 /* –––– Form Validation –––– */
-function checkFormValidation() {
-  /* eсли все поля валидны, то разблок кнопки посчитать*/
-  for (let pair of formData.entries()) {
-    console.log();
-    if (pair[1] === '' || pair[1] === null || pair[1] === undefined)
+function isFormInputsValid(formInputs) {
+  /* eсли все поля валидны, то разблок кнопку `посчитать`*/
+  for (let input of formInputs) {
+    if (
+      input.value === '' ||
+      input.value === null ||
+      input.value === undefined ||
+      isNaN(input.value)
+    )
       return false;
   }
   return true;
-}
-/* –––– Helper –––– */
-const workTimeHelper = document.getElementById('helper');
-workTimeHelper.addEventListener('click', helper);
-
-function helper(e) {
-  this.classList.toggle('opened');
-  let infoText = this.nextElementSibling;
-  if (this.textContent === '?') {
-    this.textContent = '–';
-    infoText.textContent = 'Необходимо вводить время в минутах';
-    infoText.style.opacity = 1;
-  } else {
-    this.textContent = '?';
-    infoText.style.opacity = 0;
-  }
 }
