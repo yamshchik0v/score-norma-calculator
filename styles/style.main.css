@@ -76,7 +76,9 @@ h1 {
 }
 main.container {
   background-color: #fff;
-  padding: 0 2rem 2rem;
+  padding: 1rem 2rem;
+  border: 1px solid #3e3e3e;
+  border-radius: 0.7rem;
 }
 .workTime_box {
   display: flex;

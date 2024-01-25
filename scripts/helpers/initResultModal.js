@@ -116,10 +116,9 @@ function createRemainingList(formData) {
     (prev, curr) => prev + curr.scoreTime * curr.quantity,
     0
   );
-  console.log(normaReady);
+
   for (let norma of formData.normas) {
     const remainingScore = Math.ceil(formData.timeUntilEnd / norma.scoreTime);
-    console.log("remaining score", remainingScore);
     const listItemText = `${formData.timeUntilEnd} мин. / ${
       norma.scoreTime
     } мин. = ${remainingScore} ${getCorrectScoreDeclension(
@@ -135,13 +134,13 @@ function createResultSummary(formData) {
   function getSummaryPhrase() {
     const timeRemaining = formData.timeUntilEnd;
     const leastNormaTime = Math.min(
-      formData.normas.map((norma) => norma.scoreTime)
+      ...formData.normas.map((norma) => norma.scoreTime)
     );
     if (timeRemaining <= 0) return "Работа выполнена! ✅";
     if (timeRemaining <= leastNormaTime) return "Одна оценка 👌🏻";
     if (timeRemaining <= 3 * leastNormaTime) return "Осталось чуть-чуть... 🧘🏼‍♂️";
     if (timeRemaining <= formData.cleanWorkTime / 2)
-      return "Больше половины работы выполнена 😤";
+      return "Больше половины работы выполнено 😤";
     return "Еще предстоит много работы 🤔";
   }
   return createElement("p", "info__result-summary", getSummaryPhrase(formData));
