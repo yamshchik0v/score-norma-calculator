@@ -1,41 +1,16 @@
-import initPopup from './helpers/initPopup.js';
-import workTimeHandler from './helpers/workTimeHandler.js';
-import tipHandler from './helpers/tipHandler.js';
+import initResultModal from './helpers/initResultModal.js';
+import isFormInputsValid from './helpers/isFormInputsValid.js';
+import calcResult from './helpers/calcResults.js';
+import tipHandler from './helpers/eventListeners/tipHandler.js';
+import createNormaTimeBox from './helpers/createNormaTimeBox.js';
 
 /* –––– Form –––– */
 const form = document.getElementById('form_calcucator');
-let formInputs = form.querySelectorAll('input[type="number"]');
+let formInputs = form.querySelectorAll('input[type="text"]');
 
 /* –––– Tip –––– */
 const infoTip = document.getElementById('tip');
 infoTip.addEventListener('click', tipHandler);
-
-/* ---- NormaTime box Unique Id ---- */
-let normaTimeBoxUniqueId = 1;
-
-/* ---- Form Inputs Handler function ---- */
-function getInputsData() {
-  const arrayOfInputs = Array.from(formInputs);
-  const convertedData = {};
-  for (let i = 0; i < arrayOfInputs.length; i++) {
-    let currentInput = arrayOfInputs[i];
-
-    if (currentInput.name === 'projTime' || currentInput.name === 'workTime') {
-      convertedData[currentInput.name] = +currentInput.value;
-      continue;
-    }
-    if (convertedData.hasOwnProperty('norma_' + currentInput.dataset.norma)) {
-      convertedData['norma_' + currentInput.dataset.norma].push(
-        +currentInput.value
-      );
-    } else {
-      convertedData['norma_' + currentInput.dataset.norma] = [
-        +currentInput.value,
-      ];
-    }
-  }
-  return convertedData;
-}
 
 /* –––– Elements –––– */
 const normaWrapper = document.getElementById('normaWrap');
@@ -43,77 +18,138 @@ const mainContainer = document.querySelector('main.container');
 
 /* –––– Buttons –––– */
 const calcButton = document.getElementById('calcNormaBtn');
-calcButton.addEventListener('click', (e) => {
-  e.preventDefault();
-  let data = getInputsData();
-  let resultData = calcResult(data);
-  initResultPopup(resultData);
-});
+calcButton.addEventListener('click', appCalcAndShowResult);
+const clearButton = document.getElementById('clearInputsBtn');
+clearButton.addEventListener('click', clearAllInputs);
 
-calcButton.disabled = isFormInputsValid(formInputs);
+calcButton.disabled = !isFormInputsValid(formInputs);
+
+/* –––– Form Inputs Handler function –––– */
+function getInputsData() {
+  const arrayOfInputs = Array.from(formInputs);
+  const workTimeInputsArr = arrayOfInputs.filter((input) =>
+    findWorkAndProjTime(input)
+  );
+  const scoreInputsArr = arrayOfInputs.filter(
+    (input) => !findWorkAndProjTime(input)
+  );
+  const convertedData = { projTime, workTime, normas: [] };
+
+  function findWorkAndProjTime(input) {
+    return input.id === 'projTime' || input.id === 'workTime';
+  }
+
+  workTimeInputsArr.forEach(
+    (input) => (convertedData[input.name] = +input.value)
+  );
+
+  for (let k = 0; k < scoreInputsArr.length; k += 2) {
+    let scoreObj = {};
+    scoreObj.scoreTime = +scoreInputsArr[k].value;
+    scoreObj.quantity = +scoreInputsArr[k + 1].value;
+    convertedData.normas.push(scoreObj);
+  }
+
+  return convertedData;
+}
+/* ---- Add Norma Inputs ----*/
 
 const addNormaBtn = document.getElementById('addNorma');
 addNormaBtn.addEventListener('click', function (e) {
   e.preventDefault();
-  formInputs = form.querySelectorAll('input[type="number"]');
-  createNormaTimeBox();
+  calcButton.disabled = true;
+
+  let normaTimeBoxCount = normaWrapper.children.length;
+  if (normaTimeBoxCount === 4) {
+    addNormaBtn.disabled = true;
+  } else addNormaBtn.disabled = false;
+
+  normaWrapper.append(
+    createNormaTimeBox(inputValueValidation, removeButtonHandler)
+  );
+
+  formInputs = form.querySelectorAll('input[type="text"]');
 });
 
 /* –––– Work and Project Time inputs –––– */
-let workTimePreviousValue = '';
-let projTimePreviousValue = '';
-
 const workTimeInput = document.getElementById('workTime');
-workTimeInput.addEventListener('input', workTimeHandler(workTimePreviousValue));
-
+workTimeInput.addEventListener('input', workTimeHandler);
 const projTimeInput = document.getElementById('projTime');
-projTimeInput.addEventListener('input', workTimeHandler(projTimePreviousValue));
+projTimeInput.addEventListener('input', workTimeHandler);
 
-/* –––– Work and Project Time handler function –––– */
-// function timeInputHandler(e) {
-//   const re = /[1-9]\d{1,2}$/;
-//   if (this.value.length > 3)
-//     if (this.length > 3) this.value.slice(0, this.value.length);
-//   if ()
-//     this.value = this.value.slice(1, this.value.length);
-//   if (+this.value < 0 || +this.value > 999) this.value = previousValue;
-// }
-/* –––– Norma inputs –––– */
+function workTimeHandler(e) {
+  const input = e.target;
+  input.value = input.value.replace(/[^0-9]/g, '');
 
-const scoreTimeInput = document.getElementById('scoreTime');
-const scoreQuantInput = document.getElementById('scoreQuant');
-
-/* –––– Norma input listenners –––– */
-scoreTimeInput.addEventListener('input', inputValueValidation);
-scoreQuantInput.addEventListener('input', inputValueValidation);
-
-function inputValueValidation(e) {
-  e.target.classList.remove('input_err');
-  if (+e.data === 0 && e.data !== null && +e.target.value.length === 1) {
-    e.target.value = '';
-    if (!e.target.classList.contains('input_err')) {
-      e.target.classList.add('input_err');
-    }
+  let regexValidation = /^0\d/g;
+  if (regexValidation.test(input.value)) {
+    input.value = input.value.slice(1, input.value.length);
   }
-  if (+e.target.value > 99 || +e.target.value.length >= 2) {
-    e.preventDefault();
-    e.target.value = e.target.value.slice(0, 2);
+  if (input.value.length > 4) {
+    input.value = input.value.replace(/[0-9]{5}/g, input.value.slice(0, 4));
   }
-  formInputs = form.querySelectorAll('input[type="number"]');
+  clearButton.disabled = isInputsEmpty();
   calcButton.disabled = !isFormInputsValid(formInputs);
 }
 
-/* –––– Form Validation –––– */
-function isFormInputsValid(formInputs) {
-  /* eсли все поля валидны, то разблок кнопку `посчитать`*/
-  for (let input of formInputs) {
-    if (
-      input.value === '' ||
-      input.value === null ||
-      input.value === undefined ||
-      isNaN(input.value)
-    )
-      return false;
+/* –––– Norma inputs –––– */
+const scoreTimeInput = document.getElementById('scoreTime');
+scoreTimeInput.addEventListener('input', inputValueValidation);
+const scoreQuantInput = document.getElementById('scoreQuant');
+scoreQuantInput.addEventListener('input', inputValueValidation);
+
+/* ---- Inputs Validate ---- */
+function inputValueValidation(e) {
+  const input = e.target;
+
+  input.classList.remove('input_err');
+  input.value = input.value.replace(/[^0-9]/g, '');
+
+  if (
+    !input.value ||
+    (+input.value === 0 && !input.classList.contains('input_err'))
+  ) {
+    input.classList.add('input_err');
   }
-  return true;
+  let regexValidation = /^0\d/g;
+  if (regexValidation.test(input.value)) {
+    input.value = input.value.slice(1, input.value.length);
+  }
+  if (+input.value > 99 || +input.value.length >= 2) {
+    input.value = input.value.slice(0, 2);
+  }
+
+  clearButton.disabled = isInputsEmpty();
+  calcButton.disabled = !isFormInputsValid(formInputs);
+}
+
+/* –––– Remove Norma Button Handler –––– */
+function removeButtonHandler(e) {
+  e.preventDefault();
+  addNormaBtn.disabled = false;
+  e.target.parentElement.remove();
+  formInputs = form.querySelectorAll('input[type="text"]');
+  calcButton.disabled = !isFormInputsValid(formInputs);
+}
+/* ---- Calc result Handler ---- */
+function appCalcAndShowResult(e) {
+  let popupWrapperElem = document.querySelector('section.popup_wrap');
+  if (popupWrapperElem) return;
+  e.preventDefault();
+  let data = getInputsData();
+  let resultData = calcResult(data);
+  initResultModal(resultData);
+}
+
+/* ---- Clear button functions and handlers ---- */
+function clearAllInputs(e) {
+  e.preventDefault();
+  formInputs.forEach((input) => (input.value = ''));
+  formInputs[0].focus();
+  clearButton.disabled = true;
+  calcButton.disabled = true;
+}
+
+function isInputsEmpty() {
+  return Array.from(formInputs).every((input) => input.value === '');
 }

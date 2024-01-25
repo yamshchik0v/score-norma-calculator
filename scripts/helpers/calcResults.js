@@ -1,22 +1,21 @@
 export default function calcResult(data) {
-  console.log(data);
-  let { workTime, projTime, ...normas } = data;
-  const normasArr = Object.values(normas);
-  let cleanWorkTime = workTime - projTime;
-  let allNormaTime = normasArr
-    .map((norma) => norma[0] * norma[1])
-    .reduce((prev, curr) => prev + curr, 0);
-  const timeLeft = cleanWorkTime - allNormaTime;
-  let hoursLeft = Math.round(timeLeft / 60);
-  let minutesLeft = timeLeft - hoursLeft * 60;
-  console.log('normas: ', normas);
+  const { workTime, projTime, normas } = data;
+  const cleanWorkTime = +workTime - +projTime;
+  const allNormaTime = normas.reduce((prev, curr) => curr.scoreTime * curr.quantity + prev, 0);
+  const timeUntilEnd = cleanWorkTime - allNormaTime
+  const hoursLeft = Math.round(timeUntilEnd / 60);
+  const minutesLeft = timeUntilEnd - hoursLeft * 60;
+  const normaReady = timeUntilEnd <= 0;
+
   return {
-    normaReady: timeLeft <= 0,
     workTime,
     projTime,
-    timeLeft,
+    cleanWorkTime,
+    normas,
+    allNormaTime,
+    timeUntilEnd,
     hoursLeft,
     minutesLeft,
-    normasArr,
+    normaReady,
   };
 }

@@ -7,12 +7,12 @@
     <link rel="stylesheet" href="styles/style.main.css" />
     <link rel="stylesheet" href="styles/style.input.css" />
     <link rel="stylesheet" href="styles/style.tip.css" />
-    <link rel="stylesheet" href="styles/style.popup.css" />
+    <link rel="stylesheet" href="styles/style.modal.css" />
     <script defer src="/scripts/script.js" type="module"></script>
   </head>
   <body>
     <main class="container">
-      <h1>Калькулятор нормы</h1>
+      <h1 class="header">Калькулятор нормы</h1>
       <div class="tip_wrap">
         <p class="tip" id="tip">?</p>
         <p class="infoText"></p>
@@ -21,23 +21,25 @@
         <section class="workTime_box">
           <div class="input_box">
             <input
-              type="number"
+              type="text"
               class="input_field"
               required
               id="workTime"
               name="workTime"
               value="480"
+              inputmode="numeric"
             />
             <label class="input_label" for="workTime">Служебный</label>
           </div>
           <div class="input_box">
             <input
-              type="number"
+              type="text"
               class="input_field"
               required
               id="projTime"
               name="projTime"
               value="0"
+              inputmode="numeric"
             />
             <label class="input_label" for="workTime">Проект</label>
           </div>
@@ -47,30 +49,31 @@
           <button class="calc_norma" id="calcNormaBtn" disabled>
             Посчитать
           </button>
+          <button class="clear_inputs" id="clearInputsBtn">Очистить поля</button>
         </section>
         <section class="normaTime_wrap" id="normaWrap">
           <section class="normaTime_box">
-            <!-- <div class="sequence_number">1</div> -->
             <div class="input_box">
               <input
-                type="number"
+                type="text"
                 class="input_field"
                 required
                 id="scoreTime"
                 name="scoreTime"
                 value="18"
+                inputmode="numeric"
                 data-norma="0"
               />
               <label class="input_label" for="scoreTime">Время на оценку</label>
             </div>
             <div class="input_box">
               <input
-                type="number"
+                type="text"
                 class="input_field"
                 required
                 id="scoreQuant"
                 name="scoreQuant"
-                value="12"
+                inputmode="numeric"
                 data-norma="0"
               />
               <label class="input_label" for="scoreQuant"
@@ -80,12 +83,6 @@
           </section>
         </section>
       </form>
-      <!-- <section class="popup_wrap">
-        <section class="popup-box">
-          <h2 class="popup-title">Результат</h2>
-          <div class="popup-result"></div>
-          <button class="popup-close">Понятно</button>
-        </section> -->
       </section>
     </main>
   </body>

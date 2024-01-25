@@ -1,11 +1,9 @@
-export default function createNormaTimeBox() {
-  normaTimeBoxUniqueId++;
-  calcButton.disabled = true;
-  let normaTimeBoxCount = normaWrapper.children.length;
-  if (normaTimeBoxCount === 3) {
-    addNormaBtn.disabled = true;
-  } else addNormaBtn.disabled = false;
+let normaTimeBoxUniqueId = 1;
 
+export default function createNormaTimeBox(
+  inputValueValidation,
+  removeButtonHandler
+) {
   // - Section
   const normaTimeBoxElem = document.createElement('section');
   normaTimeBoxElem.classList.add('normaTime_box');
@@ -14,11 +12,12 @@ export default function createNormaTimeBox() {
   inputBoxTimeElem.classList.add('input_box');
 
   const scoreTimeInputElem = document.createElement('input');
-  scoreTimeInputElem.setAttribute('type', 'number');
+  scoreTimeInputElem.setAttribute('type', 'text');
   scoreTimeInputElem.classList.add('input_field');
   scoreTimeInputElem.setAttribute('required', '');
-  scoreTimeInputElem.setAttribute('id', 'scoreTime' + normaTimeBoxUniqueId);
-  scoreTimeInputElem.setAttribute('name', 'scoreTime' + normaTimeBoxUniqueId);
+  scoreTimeInputElem.setAttribute('id', 'scoreTime-' + normaTimeBoxUniqueId);
+  scoreTimeInputElem.setAttribute('name', 'scoreTime-' + normaTimeBoxUniqueId);
+  scoreTimeInputElem.setAttribute('inputmode', 'numeric');
   scoreTimeInputElem.setAttribute('data-norma', normaTimeBoxUniqueId);
   scoreTimeInputElem.addEventListener('input', inputValueValidation);
 
@@ -31,11 +30,15 @@ export default function createNormaTimeBox() {
   inputBoxQuantElem.classList.add('input_box');
 
   const scoreQuantInputElem = document.createElement('input');
-  scoreQuantInputElem.setAttribute('type', 'number');
+  scoreQuantInputElem.setAttribute('type', 'text');
   scoreQuantInputElem.classList.add('input_field');
   scoreQuantInputElem.setAttribute('required', '');
-  scoreQuantInputElem.setAttribute('id', 'scoreQuant' + normaTimeBoxUniqueId);
-  scoreQuantInputElem.setAttribute('name', 'scoreQuant' + normaTimeBoxUniqueId);
+  scoreQuantInputElem.setAttribute('id', 'scoreQuant-' + normaTimeBoxUniqueId);
+  scoreQuantInputElem.setAttribute(
+    'name',
+    'scoreQuant-' + normaTimeBoxUniqueId
+  );
+  scoreQuantInputElem.setAttribute('inputmode', 'numeric');
   scoreQuantInputElem.setAttribute('data-norma', normaTimeBoxUniqueId);
   scoreQuantInputElem.addEventListener('input', inputValueValidation);
 
@@ -46,18 +49,10 @@ export default function createNormaTimeBox() {
   // - Remove button
   const removeButtonElem = document.createElement('button');
   removeButtonElem.classList.add('remove_norma');
-  removeButtonElem.textContent = '-';
-  removeButtonElem.addEventListener(
-    'click',
-    (e) => {
-      e.preventDefault();
-      addNormaBtn.disabled = false;
-      e.target.parentElement.remove();
-      formInputs = form.querySelectorAll('input[type="number"]');
-      calcButton.disabled = !isFormInputsValid(formInputs);
-    },
-    { once: true }
-  );
+  removeButtonElem.textContent = 'ー';
+  removeButtonElem.addEventListener('click', removeButtonHandler, {
+    once: true,
+  });
   inputBoxTimeElem.append(scoreTimeInputElem, scoreTimeLabelElem);
   inputBoxQuantElem.append(scoreQuantInputElem, scoreQuanLabelElem);
   normaTimeBoxElem.append(
@@ -65,7 +60,8 @@ export default function createNormaTimeBox() {
     inputBoxTimeElem,
     inputBoxQuantElem
   );
-  // normaTimeBoxElem.append(inputBoxTimeElem);
-  // normaTimeBoxElem.append(inputBoxQuantElem);
-  normaWrapper.append(normaTimeBoxElem);
+  normaTimeBoxUniqueId++;
+  normaTimeBoxElem.append(inputBoxTimeElem);
+  normaTimeBoxElem.append(inputBoxQuantElem);
+  return normaTimeBoxElem;
 }

@@ -17,6 +17,9 @@
   transition: 0.2s;
   flex-shrink: 0;
 }
+.tip:hover {
+  color: rgb(0, 187, 255);
+}
 
 .tip.opened {
   color: rgba(255, 0, 0, 0.7);

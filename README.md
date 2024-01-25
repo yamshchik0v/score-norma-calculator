@@ -1,27 +1,40 @@
-### About
+### About this project
 
-A Score Norma Calculator is an application that would help me and my colleagues to calculate their work time properly and fast.
+A Score Norma Calculator is an application that would help my colleagues calculate their work time properly and fast. This tool is quite narrowly focused, so it may be useless for people passing by.
+
+### Future features (planned):
+<ol>
+<li>add input to let user name normas;</li>
+<li>add norma templates;</li>
+<li>create functionality that allows user create their own templates;</li>
+<li>add history;</li>
+<li>upgrade design;</li>
+<li>add color variables into css;</li>
+</ol>
 
 ### Versions history
+> **_v. 0.1.0_** `Release`
+> - addeded and changed:
+>   - completly working application
+>   - added appearing and disappearing animations to modal
+>   - added calculations and render to result modal
+>   - now the app is responsive for most devices (desctop/tablet/smartphone)
+>   - now app properly validates the form inputs
+>   - switch to BEM mothodology
+    
+> - fixed:
+>   - fixed inputs validation. Now users can input only numbers and nothing else. Starting type with '0' works properly
+>   - now app properly validates the form inputs
+>   - fixed some css
 
-Planned:
-
-1. switch to BEM
-2. properly organize scripts interaction that do not work yet with each other
-3. add logic to check project time is not bigger than worktime
-4. make application fully adaptive for all devices
-5. add color variables into css
-6. add open and close animations to result popup
-
-> **_v 0.0.2_**
->
+> **_v. 0.0.2_**
 > - addeded:
 >   - files structuring;
 >   - main functions that shows popup window with results and it's display logic
 >   - fixed project/work time inputs validation
 >   - renamed some classes and variables for better code readability
 
-> **_v 0.0.1_**
+> **_v. 0.0.1_**
 >
 > - added README.MD file and started versions history.
 > - commited all complited project work:

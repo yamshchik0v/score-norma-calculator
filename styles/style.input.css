@@ -3,6 +3,7 @@
   margin: 0.5rem 0;
   color: #888;
 }
+
 .input_label {
   position: absolute;
   top: 50%;
@@ -10,12 +11,11 @@
   transform: translateY(-50%);
   user-select: none;
   pointer-events: none;
-  background-color: #fff;
+  background-color: none;
   padding: 0 0.2rem;
-  transition: all 0.15s;
+  transition: all 0.15s, background-color linear .15s;
   border-radius: 0.3rem;
 }
-
 input.input_field {
   border: 1px solid #888;
   transition: border 0.3s;
@@ -26,19 +26,16 @@ input.input_field {
 }
 .input_box input:focus ~ label,
 .input_box input:valid ~ label {
+  background-color: #fff;
   top: 0;
   font-size: 0.8rem;
-  /* transform: translateY(0); */
+}
+input.input_field.input_err {
+  transition: background-color linear 0.15s;
+  border: 1px solid #f52222;
+  background-color: #ffcecd;
 }
 
-input.input_field::-webkit-outer-spin-button,
-input.input_field::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-` input[type='number'].input_field {
-  -moz-appearance: textfield;
-}
-input.input_err {
-  border: 1px solid #f52222;
+input.input_err:focus {
+  background-color: #fff;
 }
