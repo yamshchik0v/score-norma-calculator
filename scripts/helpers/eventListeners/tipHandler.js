@@ -3,7 +3,7 @@ export default function tipHandler(e) {
   let infoText = this.nextElementSibling;
   if (this.textContent === '?') {
     this.textContent = '–';
-    infoText.textContent = 'Необходимо вводить время в минутах';
+    infoText.textContent = 'Время в минутах. Нужно заполнить все поля';
     infoText.style.opacity = 1;
   } else {
     this.textContent = '?';
